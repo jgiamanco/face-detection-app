@@ -53,17 +53,22 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('inputimage');
+    const clarifaiFace = data.outputs[0].data.regions;
+    const image = document.getElementById('inputImage');
     const width = Number(image.width);
     const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
-    }
-  }
+    const faceCollection = [];
+    clarifaiFace.forEach((face) => {
+      const boundingBoxArr = [];
+      const faceCoord = face.region_info.bounding_box;
+      boundingBoxArr.push({ leftCol: faceCoord.left_col * width });
+      boundingBoxArr.push({ topRow: faceCoord.top_row * height });
+      boundingBoxArr.push({ rightCol: width - (faceCoord.right_col * width) });
+      boundingBoxArr.push({ bottomRow: height - (faceCoord.bottom_row * height) });
+      faceCollection.push(boundingBoxArr);
+    });
+    return faceCollection;
+  };
 
   displayFaceBox = (box) => {
     this.setState({box: box});
