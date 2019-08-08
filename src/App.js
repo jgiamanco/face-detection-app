@@ -24,7 +24,7 @@ const initialState = {
   disableFind: true,
   loading: false,
   user: JSON.parse(localStorage.getItem('user')) || {
-    id: "",
+    id: 0,
     name: "",
     email: "",
     entries: 0,
