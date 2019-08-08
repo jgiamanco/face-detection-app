@@ -32,9 +32,9 @@ class ImageLinkForm extends React.Component {
 							<label className="f4 link ph3 pv2 dib white bg-mid-gray br3 mb2" onClick={this.onClickShowFileChooser}><input type="radio" name="options" id="option2" />UPLOAD</label>
 						</div>
 						{this.state.showFileChooser ?
-							<div id="uploadComputer" className="mb2">
+							<div id="uploadComputer" className="bg mb2">
 								<label className="f3 white">Choose a file </label>
-								<input type="file" id="image" name="image" accept="image/*" onChange={onInputChange} />
+								<input type="file" id="image" name="image" class="upload" accept="image/*" onChange={onInputChange} />
 							</div>
 							: 
 							<div>
