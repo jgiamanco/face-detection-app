@@ -105,7 +105,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({ loading: true });
-    fetch(url + "/imageurl", {
+    fetch(url + "/imageUrl", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
