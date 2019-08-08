@@ -19,7 +19,7 @@ class ImageLinkForm extends React.Component {
 	}
 
 	render() {
-		const { onInputChange, onButtonSubmit, disableFind } = this.props;
+		const { onInputChange, onButtonSubmit, disableFind, input, onInputClear } = this.props;
 		return (
 			<div className="ma4 mt0">
 				<p className="f3 b mid-gray">
