@@ -1,40 +1,36 @@
 import React, { Component } from 'react';
 import Particles from 'react-particles-js';
-import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Navigation from './components/Navigation/Navigation';
+import Logo from './components/Logo/Logo';
+import Rank from './components/Rank/Rank';
+import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
+import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
-import Logo from './components/Logo/Logo';
-import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
-import Rank from './components/Rank/Rank';
+import Loading from './components/Loading/Loading';
 import './App.css';
+import myParameters from './particles-config.json';
 
-const particlesOptions = {
-  particles: {
-    number: {
-      value: 30,
-      density: {
-        enable: true,
-        value_area: 800
-      }
-    }
-  }
-}
+
+const url = "https://facial-detection-database.herokuapp.com";
+// const url = 'http://localhost:3000';
 
 const initialState = {
   input: '',
   imageUrl: '',
-  box: {},
+  box: [{}],
   route: 'signin',
-  isSignedIn: false,
-  user: {
-    id: '',
-    name: '',
-    email: '',
+  isSignedIn: localStorage.getItem('isSignedIn') || false,
+  disableFind: true,
+  loading: false,
+  user: JSON.parse(localStorage.getItem('user')) || {
+    id: "",
+    name: "",
+    email: "",
     entries: 0,
-    joined: ''
+    joined: ""
   }
-}
+};
 
 class App extends Component {
   constructor() {
@@ -43,106 +39,156 @@ class App extends Component {
   }
 
   loadUser = (data) => {
-    this.setState({user: {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      entries: data.entries,
-      joined: data.joined
-    }})
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined
+      }
+    });
+    localStorage.setItem('user', JSON.stringify(this.state.user));
   }
 
   calculateFaceLocation = (data) => {
+    if (data === -1 || Object.keys(data.outputs[0].data).length === 0) { return []; }
     const clarifaiFace = data.outputs[0].data.regions;
+    const faces = [];
+    for (let i = 0; i < clarifaiFace.length; i++) {
+      faces.push(clarifaiFace[i].region_info.bounding_box);
+    }
     const image = document.getElementById('inputImage');
     const width = Number(image.width);
     const height = Number(image.height);
-    const faceCollection = [];
-    clarifaiFace.forEach((face) => {
-      const boundingBoxArr = [];
-      const faceCoord = face.region_info.bounding_box;
-      boundingBoxArr.push({ leftCol: faceCoord.left_col * width });
-      boundingBoxArr.push({ topRow: faceCoord.top_row * height });
-      boundingBoxArr.push({ rightCol: width - (faceCoord.right_col * width) });
-      boundingBoxArr.push({ bottomRow: height - (faceCoord.bottom_row * height) });
-      faceCollection.push(boundingBoxArr);
+    let faceCollection = faces.map(s => {
+      return {
+        leftCol: s.left_col * width,
+        topRow: s.top_row * height,
+        rightCol: width - (s.right_col * width),
+        bottomRow: height - (s.bottom_row * height)
+      }
     });
     return faceCollection;
-  };
+  }
 
   displayFaceBox = (box) => {
-    this.setState({box: box});
+    this.setState({ box: box || []});
   }
 
   onInputChange = (event) => {
-    this.setState({input: event.target.value});
+    if (event.target.files) {
+      this.setState({ loading: true });
+      const files = Array.from(event.target.files);
+      const formData = new FormData();
+      files.forEach((file, i) => {
+        formData.append(i, file)
+      })
+      fetch(`${url}/image-upload`, {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(images => {
+          this.setState({ input: images[0].url, disableFind: false, loading: false });
+        })
+    } else {
+      this.setState({ input: event.target.value, disableFind: false });
+    }
+
+    this.setState({ box: [{}] });
+  }
+
+  onInputClear = () => {
+    this.setState({ input: '', box: [{}], disableFind: false, loading: false });
   }
 
   onButtonSubmit = () => {
-    this.setState({imageUrl: this.state.input});
-      fetch('https://facial-detection-database.herokuapp.com/imageurl', {
-        method: 'post',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          input: this.state.input
-        })
+    this.setState({ loading: true });
+    fetch(url + "/imageurl", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: this.state.input
       })
-      .then(response => response.json())
-      .then(response => {
-        if (response) {
-          fetch('https://facial-detection-database.herokuapp.com/image', {
-            method: 'put',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              id: this.state.user.id
-            })
+    })
+    .then(response => response.json())
+    .then(response => {
+      if (response) {
+        fetch(url + "/image", {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: this.state.user.id
           })
-            .then(response => response.json())
-            .then(count => {
-              this.setState(Object.assign(this.state.user, { entries: count}))
-            })
-            .catch(console.log)
-
-        }
-        this.displayFaceBox(this.calculateFaceLocation(response))
-      })
-      .catch(err => console.log(err));
+        })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, { entries: count }));
+          })
+          .catch(console.log)
+      }
+      this.setState({ loading: false });
+      this.displayFaceBox(this.calculateFaceLocation(response));
+    })
+    .catch(err => console.log(err));
   }
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState(initialState)
+      this.setState(initialState);
+      localStorage.removeItem('isSignedIn');
     } else if (route === 'home') {
-      this.setState({isSignedIn: true})
+      this.setState({ isSignedIn: true });
+      localStorage.setItem('isSignedIn', true);
     }
-    this.setState({route: route});
+    this.setState({ route: route });
   }
 
+
   render() {
-    const { isSignedIn, imageUrl, route, box } = this.state;
+    let { box, input, route, isSignedIn, disableFind, user, loading } = this.state;
     return (
       <div className="App">
-         <Particles className='particles'
-          params={particlesOptions}
+        <Particles 
+          className="particles" 
+          params={myParameters} 
         />
-        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
-        { route === 'home'
+        <Navigation 
+          onRouteChange={this.onRouteChange} 
+          isSignedIn={isSignedIn} 
+        />
+        {isSignedIn
           ? <div>
-              <Logo />
-              <Rank
-                name={this.state.user.name}
-                entries={this.state.user.entries}
+              <div className="logo-rank">
+                <Logo />
+                <Rank name={user.name} entries={user.entries} />
+              </div>
+              {
+                loading ? <Loading /> :
+                <>
+                  <ImageLinkForm 
+                    input={input}
+                    onInputChange={this.onInputChange} 
+                    onButtonSubmit={this.onButtonSubmit} 
+                    disableFind={disableFind}
+                    onInputClear={this.onInputClear}
+                  />
+                  {input && <FaceRecognition box={box} imageUrl={input} />}
+                </>
+              }
+          </div>
+          : (route === 'signin' || route === 'signout'
+            ? <Signin 
+                loadUser={this.loadUser} 
+                onRouteChange={this.onRouteChange} 
+                url={url} 
               />
-              <ImageLinkForm
-                onInputChange={this.onInputChange}
-                onButtonSubmit={this.onButtonSubmit}
+            : <Register 
+                loadUser={this.loadUser} 
+                onRouteChange={this.onRouteChange}  
+                url={url}
               />
-              <FaceRecognition box={box} imageUrl={imageUrl} />
-            </div>
-          : (
-             route === 'signin'
-             ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-             : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
             )
         }
       </div>

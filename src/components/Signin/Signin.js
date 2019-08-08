@@ -18,22 +18,26 @@ class Signin extends React.Component {
   }
 
   onSubmitSignIn = () => {
-    fetch('https://facial-detection-database.herokuapp.com/signin', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.signInEmail,
-        password: this.state.signInPassword
-      })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
-  }
+		fetch(this.props.url + "/signin", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				email: this.state.signInEmail,
+				password: this.state.signInPassword
+			})
+		})
+		.then(response => response.json())
+		.then(user => {
+			if (user.id) {
+				this.props.loadUser(user);
+				this.props.onRouteChange("home");
+			}
+			else {
+				console.log("Unable to sign in with that email and password combination.");
+			}
+		})
+		.catch(err => console.log("fetch err ", err));
+	}
 
   render() {
     const { onRouteChange } = this.props;

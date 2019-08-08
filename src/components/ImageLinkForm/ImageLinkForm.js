@@ -1,23 +1,55 @@
 import React from 'react';
 import './ImageLinkForm.css';
 
-const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
-  return (
-    <div>
-      <p className='f3'>
-        {'This App detects faces in your pictures. Give it a try.'}
-      </p>
-      <div className='center'>
-        <div className='form center pa4 br3 shadow-5'>
-          <input className='f4 pa2 w-70 center' type='tex' onChange={onInputChange}/>
-          <button
-            className='w-30 grow f4 link ph3 pv2 dib white bg-blue'
-            onClick={onButtonSubmit}
-          >Detect</button>
-        </div>
-      </div>
-    </div>
-  );
+class ImageLinkForm extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			showFileChooser: false
+		};
+	}
+
+	onClickShowFileChooser = (event) => {
+		this.setState({ showFileChooser: true });
+	}
+
+	onClickShowUrl = (event) => {
+		this.setState({ showFileChooser: false });
+	}
+
+	render() {
+		const { onInputChange, onButtonSubmit, disableFind } = this.props;
+		return (
+			<div className="ma4 mt0">
+				<p className="f3">
+					{'Magic is here!'}
+				</p>
+				<div className="center-content">
+					<div className="form pa3 br3 shadow-5">
+						<div data-toggle="buttons">
+							<label className="f4 link ph3 pv2 dib white bg-mid-gray br3 mb2" onClick={this.onClickShowUrl}><input type="radio" name="options" id="option1" defaultChecked />URL</label>
+							<label className="f4 link ph3 pv2 dib white bg-mid-gray br3 mb2" onClick={this.onClickShowFileChooser}><input type="radio" name="options" id="option2" />UPLOAD</label>
+						</div>
+						{this.state.showFileChooser ?
+							<div id="uploadComputer" className="mb2">
+								<label className="f3 white">Choose a file </label>
+								<input type="file" id="image" name="image" accept="image/*" onChange={onInputChange} />
+							</div>
+							: 
+							<div>
+								<input className="f4 pa2 w-100 center mb2" type="text" onChange={onInputChange}
+									onCut={onInputChange}
+									onPaste={onInputChange}
+									onInput={onInputChange} placeholder="Put your URL here" />
+							</div>
+							}
+						<button className="white b pv2 ph3 bn br2" onClick={onButtonSubmit} disabled={disableFind}>Find face</button>
+					</div>
+				</div>
+			</div>
+		);
+	}
 }
 
 export default ImageLinkForm;

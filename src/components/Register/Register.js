@@ -22,24 +22,27 @@ class Register extends React.Component {
     this.setState({password: event.target.value})
   }
 
-  onSubmitSignIn = () => {
-    fetch('https://facial-detection-database.herokuapp.com/register', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-        name: this.state.name
-      })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
-  }
+  onSubmitSignIn = () =>{
+		fetch(this.props.url + "/register", {
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
+			body: JSON.stringify({
+				email: this.state.email,
+				password: this.state.password,
+				name: this.state.name
+			})
+		})
+		.then(response => response.json())
+		.then( user => {
+			if (user.id){
+				this.props.loadUser(user);
+				this.props.onRouteChange("home");
+			} 
+			else {
+				console.log("Unable to register, please try again. If problem persists, please email me at jacobdeansd@gmail.com.");
+			}
+		});
+	}
 
   render() {
     return (
