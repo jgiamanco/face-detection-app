@@ -17,7 +17,6 @@ const url = "https://facial-detection-database.herokuapp.com";
 
 const initialState = {
   input: '',
-  imageUrl: '',
   box: [{}],
   route: 'signin',
   isSignedIn: localStorage.getItem('isSignedIn') || false,
