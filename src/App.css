@@ -7,6 +7,11 @@
   justify-content: center;
 }
 
+.center-content{
+	display: flex;
+	justify-content: center;
+}
+
 .particles{
 	position: fixed;
 	top: 0;
