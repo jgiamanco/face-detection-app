@@ -7,6 +7,10 @@
   justify-content: center;
 }
 
+.entry {
+	margin: auto;
+}
+
 .center-content{
 	display: flex;
 	justify-content: center;
