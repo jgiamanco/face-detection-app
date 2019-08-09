@@ -4,7 +4,7 @@ const Rank = ({name, entries}) => {
 	return (
 		<div className="ma4 mt0 center">
 			<div className="white f3">
-				<span className="b f2">{name}</span>, your entry count is
+				<span className="b f2">{name}, your entry count is </span>
 			</div>
 			<div className="white f2">
 				{entries}
