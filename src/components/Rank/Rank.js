@@ -6,6 +6,7 @@ const Rank = ({name, entries}) => {
 			<div className="white f3">
 				<span className="b f2">{name}, your entry count is </span>
 			</div>
+			<br/>
 			<div className="white f2">
 				{entries}
 			</div>
