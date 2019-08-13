@@ -23,7 +23,7 @@ class ImageLinkForm extends React.Component {
 		return (
 			<div className="ma4 mt0">
 				<p className="f3 b mid-gray">
-					Put an image url-address or upload one from gallery
+					Enter an image url-address or upload one from your gallery
 				</p>
 				<div className="center-content">
 					<div className="form pa3 br3 shadow-5">
