@@ -50,7 +50,7 @@ class ImageLinkForm extends React.Component {
 									onCut={onInputChange}
 									onPaste={onInputChange}
 									onInput={onInputChange} 
-									placeholder="http://" />
+									placeholder="https://" />
 							</div>
 							}
 						<button className="white b pv2 ph3 bn br2" onClick={onButtonSubmit} disabled={disableFind}>Find face</button>

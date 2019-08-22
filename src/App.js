@@ -89,7 +89,7 @@ class App extends Component {
       })
         .then(res => res.json())
         .then(images => {
-          this.setState({ input: images[0].url, disableFind: false, loading: false });
+          this.setState({ input: images[0].secure_url, disableFind: false, loading: false });
         })
     } else {
       this.setState({ input: event.target.value, disableFind: false });
