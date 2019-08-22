@@ -1,3 +1,16 @@
 .Tilt {
   background: linear-gradient(to right, rgba(183,222,237,1) 0%,rgba(113,206,239,1) 69%,rgba(33,180,226,1) 100%,rgba(183,222,237,1) 100%); /* w3c */
 }
+
+@media screen and (max-width: 600px) {
+  .Tilt {
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  div.Tilt {
+    height: 125px !important;
+    width: 125px !important;
+  }
+}

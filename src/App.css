@@ -1,3 +1,29 @@
+@media screen and (max-width: 600px) {
+	.logo-rank {
+		display: flex;
+		flex-flow: column;
+		justify-content: center;
+	}
+
+	span.f2 {
+		font-size: 1.5rem;
+	}
+}
+
+@media screen and (max-width: 470px) {
+	span.f2 {
+		font-size: 1rem;
+	}
+
+	div.f2 {
+		font-size: 1.25rem;
+	}
+
+	p.f3 {
+		font-size: 1rem;
+	}
+}
+
 .App {
   text-align: center;
 }
@@ -27,4 +53,5 @@
 
 .logo-rank {
 	display: flex;
+	justify-content: center;
 }
