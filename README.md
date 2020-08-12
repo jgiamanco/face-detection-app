@@ -1,6 +1,6 @@
-# Face Detection App - v2
+# Face Detection App 
 
-Final project for Zero to Mastery Udemy course
+Paste an Image URL or upload an image from your computer and witness the app detect all faces in your image.
 
 1. Clone this repo
 2. Run `npm install`
