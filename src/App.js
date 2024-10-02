@@ -19,12 +19,12 @@ const initialState = {
   input: '',
   box: [{}],
   route: 'signin',
-  isSignedIn: localStorage.getItem('isSignedIn') || false,
+  isSignedIn: true,
   disableFind: true,
   loading: false,
   user: JSON.parse(localStorage.getItem('user')) || {
     id: 0,
-    name: "",
+    name: "Jacob",
     email: "",
     entries: 0,
     joined: ""
