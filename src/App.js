@@ -12,7 +12,7 @@ import './App.css';
 import myParameters from './particles-config.json';
 
 
-const url = "https://facial-detection-database.herokuapp.com";
+const url = "https://face-detection-api-xi.vercel.app";
 // const url = 'http://localhost:3000';
 
 const initialState = {
